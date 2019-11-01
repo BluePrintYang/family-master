@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>error</title>
+</head>
+<body>
+<a style="text-align: center" href="/">出错了！返回首页</a>
+
+<div class="container">
+    <div class="control">
+        <select id="select">
+            <option>深度优先-前序遍历</option>
+            <option>深度优先-后序遍历</option>
+            <option>广度优先遍历</option>
+        </select>
+        <input type="button" name="click" value="开始遍历" id="button">
+    </div>
+    <svg id="svg" width="600" height="600"></svg>
+</div>
+<!-- <script type="text/javascript" src="singlyLinkedList.js"></script> -->
+<script type="text/javascript">
+    (function () {
+            let top = document.getElementById("list");
+            // alert(top.size);
+            let treeData = {
+                data: 1,
+                children: [
+                    {
+                        data: 2,
+                        children: [
+                            {
+                                data: 4,
+                                children: [
+                                    {
+                                        data: 11,
+                                        children: []
+                                    },
+                                    {
+                                        data: 12,
+                                        children: []
+                                    }
+                                ]
+                            },
+                            {
+                                data: 5,
+                                children: []
+                            },
+                            {
+                                data: 6,
+                                children: []
+                            }
+                        ]
+                    },
+                    {
+                        data: 3,
+                        children: [
+                            {
+                                data: 7,
+                                children: [
+                                    {
+                                        data: "A",
+                                        children: []
+                                    },
+                                    {
+                                        data: "B",
+                                        children: []
+                                    }
+                                ]
+                            },
+                            {
+                                data: 8,
+                                children: []
+                            },
+                            {
+                                data: 9,
+                                children: [
+                                    {
+                                        data: 13,
+                                        children: [
+                                            {
+                                                data: 14,
+                                                children: []
+                                            },
+                                            {
+                                                data: 15,
+                                                children: []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                data: 10,
+                                children: []
+                            }
+                        ]
+                    }
+                ]
+            };
+//二叉树
+            let BinaryTree = function () {
+                //前序遍历递归实现
+                let PreOrderTraversalRecursion = function (node) {
+                    console.log(node.data);
+                    for (let i = 0; i < node.children.length; i++) {
+                        this.PreOrderTraversalRecursion(node.children[i]);
+                    }
+
+                };
+                //后序遍历递归实现
+                let PostOrderTraversalRecursion = function (node) {
+                    for (let i = 0; i < node.children.length; i++) {
+                        this.PostOrderTraversalRecursion(node.children[i]);
+                    }
+                    console.log(node.data);
+
+                };
+                //前序遍历非递归实现
+                let PreOrderTraversal = function (rootNode) {
+                    let stack = [];//存放结果的栈
+                    let temp = [];//暂存结点的栈
+                    temp.push(rootNode);
+                    while (temp.length > 0) {
+                        let node = temp.shift();
+                        stack.push(node);
+                        let children = node.children;
+                        if (children && children.length > 0) {
+                            for (let i = children.length - 1; i >= 0; i--) {
+                                temp.unshift(children[i]);
+                            }
+                        }
+                    }
+                    let result = [];
+                    while (stack.length > 0) {
+                        result.push(stack.shift().data);
+                    }
+                    return result;
+                };
+                //后序遍历非递归实现
+                let PostOrderTraversal = function (rootNode) {
+                    let stack = [];//存放结果的栈
+                    let temp = [];//暂存结点的栈
+                    temp.push(rootNode);
+                    //暂存数组不为空，即未遍历所有结点时一直循环
+                    while (temp.length > 0) {
+                        let node = temp.pop();
+                        stack.push(node);
+                        let children = node.children;
+                        //如果栈顶结点存在子节点，则全部入栈
+                        if (children && children.length > 0) {
+                            for (let i = 0; i < children.length; i++) {
+                                temp.push(children[i]);
+                            }
+                        }
+                    }
+                    let result = [];//存放遍历结果的数组
+                    while (stack.length > 0) {
+                        result.push(stack.pop().data);
+                    }
+                    return result;
+                };
+                /*//前序遍历非递归实现1
+                let PreOrderTraversal1 = function(rootNode){
+                    let stack = [];//暂存结点的栈
+                    let result = [],count = 0;//存放遍历结果的数组
+                    let p = rootNode;
+                    let  = null;
+                    while(p!==null && stack.length>0){
+                        while(ppre!==null){
+                            result[count++]=p.data;
+                            stack.push(p);
+                            if(p.children.length>0){
+                                p = p.children[0];
+                            }else{
+                                p = null;
+                            }
+                        }
+                        if(stack.length>0){
+                            p = stack[stack.length-1];
+                            let len = p.children.length;
+                            if(len===0 && pre===p.children[len-1] ){
+                                stack.pop();
+                                p = stack[stack.length-1].children[]
+                            }else{
+                                //当前结点有子节点，压栈
+                                for(let i = p.children.length-1;i>=1;i--){
+                                    stack.push(p.children[i]);
+                                }
+                            }
+                            pre = p;
+                            p = p.children[1];
+                        }
+                    }
+                    stack.push(rootNode);
+
+                    return result;
+                }*/
+                //后序遍历非递归实现1
+                let PostOrderTraversal1 = function (rootNode) {
+                    let stack = [];//暂存结点的栈
+                    let result = [], count = 0;//存放遍历结果的数组
+                    let pre = null;
+                    let cur = null;//前一个遍历的结点，当前遍历的结点
+                    stack.push(rootNode);
+                    while (stack.length > 0) {
+                        cur = stack[stack.length - 1];//取当前结点
+                        let len = cur.children.length;
+                        if (len === 0 || pre === cur.children[len - 1]) {
+                            //当前结点没有子节点或子节点已经遍历完毕
+                            pre = stack.pop();
+                            result[count++] = pre.data;
+                        } else {
+                            //当前结点有子节点，压栈
+                            for (let i = cur.children.length - 1; i >= 0; i--) {
+                                stack.push(cur.children[i]);
+                            }
+                        }
+                    }
+                    return result;
+                };
+                //层序遍历
+                const LeverOrderTraversal1 = function (tree) {
+                    let rootNode = JSON.parse(JSON.stringify(tree));
+                    let result = [];
+                    let queue = [], index = 0;//队列、遍历索引和队列中结点的数量
+                    rootNode.floor = 1;
+                    rootNode.widthRatio = 1;//占画布宽度的比例
+                    queue.push(rootNode);
+                    rootNode.father = rootNode;
+                    rootNode.which = 0;
+                    while (index !== queue.length) {
+                        let node = queue[index++];
+                        let len = node.children.length;
+                        if (len > 0) {
+                            for (let i = 0; i < len; i++) {
+                                node.children[i].floor = node.floor + 1;
+                                node.children[i].which = i;
+                                node.children[i].widthRatio = node.widthRatio / len;
+                                node.children[i].father = node;
+                                queue.push(node.children[i]);
+                            }
+                        }
+                        if (queue.length > 100) break;
+                    }
+                    for (let i = 0; i < queue.length; i++) {
+                        result[i] = queue[i];
+                    }
+
+                    return result;
+                };
+                return {
+                    PreOrderTraversalRecursion: PreOrderTraversalRecursion,
+                    PostOrderTraversalRecursion: PostOrderTraversalRecursion,
+                    PreOrderTraversal: PreOrderTraversal,
+                    PostOrderTraversal: PostOrderTraversal,
+                    PostOrderTraversal1: PostOrderTraversal1,
+                    LeverOrderTraversal1: LeverOrderTraversal1
+                }
+            };
+
+            /*let tree = new BinaryTree();
+            tree.PreOrderTraversalRecursion(treeData);
+            console.log("\n");
+            tree.PostOrderTraversalRecursion(treeData);
+            console.log("前序优先前序遍历：",tree.PreOrderTraversal(treeData));
+            console.log("深度优先后序遍历：",tree.PostOrderTraversal(treeData));
+            console.log("深度优先后序遍历1：",tree.PostOrderTraversal1(treeData));
+            console.log("层序遍历/广度优先遍历：",tree.LeverOrderTraversal1(treeData));*/
+//showTree();
+
+
+            let showTreeTraverse = function (id) {
+                let svg = document.getElementById("svg");
+                svg.innerHTML = "";
+                let circleStr = "", lineStr = "", textStr = "";//圆、线和文本的HTML字符串
+                let tree = new BinaryTree();
+                let nodes = tree.LeverOrderTraversal1(treeData);//层序遍历生成数组
+                //console.log(nodes);
+                console.log(id);
+                //计算画树需要的画布尺寸
+                let size = (function (nodes) {
+                    let numArr = [];
+                    for (let i = 0; i < nodes.length; i++) {
+                        if (numArr[nodes[i].floor - 1] === undefined) {
+                            numArr[nodes[i].floor - 1] = 0;
+                        }
+                        numArr[nodes[i].floor - 1]++;
+                    }
+                    //console.log(numArr);
+                    let max = 0;
+                    for (let i = 0; i < numArr.length; i++) {
+                        if (numArr[i] > max) {
+                            max = numArr[i];
+                        }
+                    }
+                    //console.log(max);
+                    return {
+                        width: max * 100,
+                        height: numArr.length * 80 + 80
+                    };
+                })(nodes);
+                //设置SVG画布尺寸
+                svg.setAttribute("width", size.width);
+                svg.setAttribute("height", size.height);
+                svg.parentNode.style.width = size.width + "px";
+                let width = size.width;
+
+                //遍历所有树的结点，生成圆、线和文本的HTML字符串
+                for (let i = 0; i < nodes.length; i++) {
+                    let nodeColor = nodes[i].data === id ? "#080808" : "#9F79EE";
+
+                    let cx = 0, cy = 0;//当前结点的定位像素坐标
+                    let father = nodes[i].father;
+                    if (i === 0) {
+                        father.cx = width / 2;
+                    }
+                    //父节点宽度的最左边
+                    let start = father.cx - width * father.widthRatio / 2;
+                    //当前结点的横坐标
+                    cx = start + width * nodes[i].widthRatio * (nodes[i].which + 0.5);
+                    console.log(start, cx);
+                    cy = nodes[i].floor * 80;
+                    nodes[i].cx = cx;
+                    nodes[i].cy = cy;
+                    lineStr += '<line x1="' + cx + '" y1="' + cy + '" x2="' + nodes[i].father.cx +
+                        '" y2="' + nodes[i].father.cy + '" style="stroke:black;stroke-width:2" />';
+                    circleStr += '<circle cx="' + cx + '" cy="' + cy + '" r="20" fill="' + nodeColor + '"/></circle>';
+                    //调整文本缩进
+                    let textcx = nodes[i].data > 9 ? (nodes[i].cx - 10) : (nodes[i].cx - 5),
+                        textcy = (nodes[i].cy + 6);
+                    textStr += '<text x="' + textcx + '" y="' + textcy + '" fill="white">' + nodes[i].data + '</text>';
+                }
+                svg.innerHTML = lineStr + circleStr + textStr;
+            };
+
+
+            let tree = new BinaryTree();
+            let nodes = tree.LeverOrderTraversal1(treeData);//层序遍历生成数组
+            console.log(nodes);
+            tree.PostOrderTraversal(treeData);
+            showTreeTraverse(null, nodes);
+//let traversalArr = tree.PreOrderTraversal(treeData);
+            let select = document.getElementById("select");
+            let button = document.getElementById("button");
+
+            button.addEventListener("click", function () {
+                if (button.click === false) {
+                    return;
+                } else {
+                    button.click = false;
+                }
+                let nodes = tree.LeverOrderTraversal1(treeData);//层序遍历生成数组
+                let traversalArr = tree.PostOrderTraversal(treeData);
+                let index = select.selectedIndex;
+                console.log(index);
+                switch (index) {
+                    case 0:
+                        traversalArr = tree.PreOrderTraversal(treeData);
+                        break;
+                    case 1:
+                        traversalArr = tree.PostOrderTraversal(treeData);
+                        break;
+                    case 2:
+                        traversalArr = (function () {
+                            let arr = tree.LeverOrderTraversal1(treeData);
+                            for (let i = 0; i < arr.length; i++) {
+                                arr[i] = arr[i].data;
+                            }
+                            return arr;
+                        })();
+                        break;
+
+                }
+                //注意，这里故意
+                for (let i = 0; i <= traversalArr.length; i++) {
+                    setTimeout(function (i) {
+                        showTreeTraverse(traversalArr[i], nodes);
+                        if (i >= traversalArr.length) {
+                            button.click = true;
+                            console.log("OK");
+                        }
+                    }, 400 * i, i);
+                }
+            });
+
+        }
+    )();
+
+</script>
+</body>
+</html>

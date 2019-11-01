@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="no-js">
+
+
+<meta charset="UTF-8">
+<title>family</title>
+
+<style type="text/css">
+    table.gridTable {
+        font-family: verdana, arial, sans-serif;
+        font-size: 11px;
+        color: #333333;
+        border-width: 1px;
+        border-color: #666666;
+        border-collapse: collapse;
+        width: auto;
+    }
+
+    table.gridTable th:nth-child(1) {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #D1EEEE;
+    }
+
+    table.gridTable th {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #F0FFF0;
+    }
+
+    table.gridTable td {
+        text-align: center;
+        font-size: 14px;
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #ffffff;
+    }
+</style>
+<script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/css/animate.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
+
+<script th:src="@{/js/modernizr-2.6.2.min.js}"></script>
+
+<body>
+<div class="container">
+    <h2>家谱信息</h2>
+
+    <h3><span id="time"></span></h3>
+    <h3 id="birth">今天的寿星是</h3>
+    <span th:each="list,property : ${birthday}">
+    <span th:text="${birthday.get(property.index)}"></span>
+</span>
+
+    <br>
+
+    <table id="family" class="gridTable">
+        <thead>
+        <th>id</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>生日</th>
+        <th>婚否</th>
+        <th>地址</th>
+        <th>健在</th>
+        <th>祭日</th>
+        <th>父亲id</th>
+        <th>配偶id</th>
+        <th>孩子id</th>
+        </thead>
+        <tbody>
+        <tr th:each="list : ${list}" class="tr">
+            <td th:text="${list['id']}"></td>
+            <td th:text="${list['name']}"></td>
+            <td th:text="${list['gender']}"></td>
+            <td th:text="${list['birthday']}"></td>
+            <td th:text="${list['marriage']}"></td>
+            <td th:text="${list['address']}"></td>
+            <td th:text="${list['alive']}"></td>
+            <td th:text="${list['death']}"></td>
+            <td th:text="${list['fatherId']}"></td>
+            <td th:text="${list['spouseId']}"></td>
+            <td th:text="${list['childrenId']}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a href="/admin/order">按照生日排序</a>
+
+
+
+</div>
+
+<input id="list" type="hidden" th:value="${list}"/>
+<input id="birthdayList" type="hidden" th:value="${birthday.size()}"/>
+
+
+<!-- jQuery -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<!-- Placeholder -->
+<script th:src="@{/js/jquery.placeholder.min.js}"></script>
+<!-- Waypoints -->
+<script th:src="@{/js/jquery.waypoints.min.js}"></script>
+<!-- Main JS -->
+<script th:src="@{/js/main.js}"></script>
+
+
+<script>
+    let today = new Date();
+    let time = document.getElementById("time");
+    let birth = document.getElementById("birth");
+    $(function () {
+        time.innerHTML = myFormatter(today);
+        if ($("#birthdayList").val() == 0) {
+            birth.innerHTML = "今天没有人过生日";
+        }
+    });
+
+    function myFormatter(date) {
+        let strDate = date.getFullYear() + "年";
+        if (date.getMonth() + 1 < 10) {
+            let s = date.getMonth() + 1 + "月";
+            strDate += "0" + s;
+        } else {
+            strDate += date.getMonth() + 1 + "月";
+        }
+        if (date.getDate() < 10) {
+            strDate += "0" + date.getDate() + "日";
+        } else {
+            strDate += date.getDate() + "日";
+        }
+        return strDate;
+    }
+
+
+</script>
+
+
+</body>
+</html>

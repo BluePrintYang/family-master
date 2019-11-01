@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="no-js">
+<meta charset="UTF-8">
+<title>家谱图</title>
+
+<body>
+<h2>A→B代表B是A的孩子</h2>
+<h2>A⇄B代表AB是夫妻</h2>
+<canvas id="familyTree" width="1200" height="500"></canvas>
+<input id="json" type="hidden" th:value="${json}"/>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/springy.js}"></script>
+<script th:src="@{/js/springyui.js}"></script>
+
+
+<script>
+    let json = $("#json").val();
+    //去掉"[]"的引号
+    json = json.replace(/\"\[/g,"[");
+    json = json.replace(/\]\"/g,"]");
+    let graphJSON = json;
+
+    $(function () {
+        let graph = new Springy.Graph();
+        graph.loadJSON(graphJSON);
+
+        let springy = $('#familyTree').springy({
+            graph: graph
+        });
+    });
+</script>
+
+
+</body>
+
+</html>

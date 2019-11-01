@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="no-js">
+
+
+<meta charset="UTF-8">
+<title>家谱</title>
+
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/css/animate.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
+
+
+<script th:src="@{/js/modernizr-2.6.2.min.js}"></script>
+
+
+<body>
+
+<div class="container">
+    <h1 style="text-align: center">简易家谱管理系统</h1>
+    <h2>欢迎您,admin</h2>
+    <hr>
+    <a href="/admin/find">查询家谱</a><br>
+    <a href="/admin/tree">查询图形化家谱</a><br>
+    <button onclick="showAdd()">添加成员</button>
+    <hr>
+    <form action="/admin/searchByName">
+        通过姓名查询成员:<input type="text" id="searchName" name="name" placeholder="请输入姓名"><input type="submit" value="查询"><br>
+    </form>
+    <form action="/admin/searchByBirthday">
+        通过生日查询成员:<input type="text" id="searchBirth" name="birthday" placeholder="请输入生日"><input type="submit" value="查询"><br>
+    </form>
+    <br>
+    <form>
+        通过姓名查询成员关系:<br>
+        <input type="text" id="1" name="name1" placeholder="请输入第一个人的姓名"><br>
+        <input type="text" id="2" name="name2" placeholder="请输入第二个人的姓名"><br>
+        <input type="button" onclick="getRelationship()" value="查询"><br>
+    </form>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+
+            <!-- Start Sign In Form -->
+            <div id="add" style="display: none" class="fh5co-form animate-box" data-animate-effect="fadeIn">
+                <h2>添加成员信息</h2>
+                <div class="form-group">
+                    <input type="text" placeholder="姓名" class="form-control" name="name" id="name"/>
+                    <input type="text" placeholder="生日" name="birthday" class="form-control" id="birthday"/>
+                    <br>
+                    <label for="male">
+                        <input type="radio" name="gender" id="male" value="男">男</label>
+                    <label for="female">
+                        <input type="radio" name="gender" id="female" value="女">女
+                    </label><br>
+                    <label for="married">
+                        <input type="radio" name="marriage" id="married" value="true" onclick="radioClick()"/>已婚
+                    </label>
+                    <label for="unmarried">
+                        <input type="radio" name="marriage" id="unmarried" value="false" onclick="radioClick()"/>未婚
+                    </label>
+                    <input type="text" style="display: none" class="form-control" placeholder="配偶id" name="spouseId"
+                           id="spouseId"/>
+                    <input type="text" placeholder="地址" name="address" class="form-control" id="address"/>
+                    <br>
+                    <label for="alive">
+                        <input type="radio" name="alive" id="alive" value="true" onclick="radioClick()"/>健在
+                    </label>
+                    <label for="die">
+                        <input type="radio" name="alive" id="die" value="false" onclick="radioClick()"/>已去世
+                    </label>
+                    <input type="text" style="display: none" class="form-control" placeholder="祭日" name="death"
+                           id="death"/>
+                    <input type="text" placeholder="父亲id" class="form-control" id="fatherId"/>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="添加" onclick="add()" class="btn btn-primary">
+                    <input type="button" value="取消" onclick="cancelAdd()" class="btn btn-primary">
+                </div>
+            </div>
+            <!-- END Sign In Form -->
+
+        </div>
+    </div>
+
+</div>
+
+<!-- jQuery -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<!-- Placeholder -->
+<script th:src="@{/js/jquery.placeholder.min.js}"></script>
+<!-- Waypoints -->
+<script th:src="@{/js/jquery.waypoints.min.js}"></script>
+<!-- Main JS -->
+<script th:src="@{/js/main.js}"></script>
+
+
+<script>
+    //去除左右两端的空格
+    function trim(str) {
+        if (str == null) {
+            str = "";
+        }
+        return str.replace(/(^\s*)|(\s*$)/g, "");
+    }
+</script>
+<script>
+    let show = document.getElementById("add");
+
+    function cancelAdd() {
+        show.style.display = "none";
+    }
+
+    function showAdd() {
+        show.style.display = "";
+    }
+
+    function add() {
+        let person = {
+            "name": trim($("#name").val()),
+            "birthday": trim($("#birthday").val()),
+            "gender": $('input:radio[name="gender"]:checked').val(),
+            "marriage": $('input:radio[name="marriage"]:checked').val(),
+            "address": trim($("#address").val()),
+            "alive": $('input:radio[name="alive"]:checked').val(),
+            "death": trim($("#death").val()),
+            "fatherId": trim($("#fatherId").val()),
+            "spouseId": trim($("#spouseId").val())
+            // "childrenId": trim($("#childrenId").val()),
+        };
+        if (trim(person.name) === "" || trim(person.name) === undefined || trim(person.name) == null) alert("还没有输入姓名");
+        else if (trim(person.birthday) === "" || trim(person.birthday) === undefined || trim(person.birthday) == null) alert("还没有输入出生日期");
+        else {
+            $.ajax({
+                url: "/admin/add",
+                type: "POST",
+                data: {
+                    "name": trim($("#name").val()),
+                    "birthday": trim($("#birthday").val()),
+                    "gender": $('input:radio[name="gender"]:checked').val(),
+                    "marriage": $('input:radio[name="marriage"]:checked').val(),
+                    "address": trim($("#address").val()),
+                    "alive": $('input:radio[name="alive"]:checked').val(),
+                    "death": trim($("#death").val()),
+                    "fatherId": trim($("#fatherId").val()),
+                    "spouseId": trim($("#spouseId").val())
+                    // "childrenId": trim($("#childrenId").val()),
+                },
+                success: function (msg) {
+                    alert(msg);
+                    show.style.display = "none";
+                },
+                error: function () {
+                    alert(false)
+                }
+            })
+        }
+    }
+
+    function radioClick() {
+        //定义一个变量show，show获取的是被选中的radio对应的值
+        let showDeath = "";
+        let showSpouse = "";
+        //取到所有的单选
+        let alive = document.getElementsByName("alive");
+        let marriage = document.getElementsByName("marriage");
+        //遍历
+        for (let i = 0; i < alive.length; i++) {
+            //取到所选中的值checked
+            if (alive[i].checked)
+                showDeath = alive[i].value;
+        }
+        for (let i = 0; i < marriage.length; i++) {
+            //取到所选中的值checked
+            if (marriage[i].checked)
+                showSpouse = alive[i].value;
+        }
+        //接下来就是对取到的值，进行显示和隐藏操作。
+        switch (showDeath) {
+            case 'true':
+                document.getElementById("death").style.display = "none";
+
+                break;
+            case 'false':
+                document.getElementById("death").style.display = "";
+
+                break;
+            default:
+                document.getElementById("death").style.display = "none";
+
+                break;
+        }
+
+        switch (showSpouse) {
+            case 'false':
+                document.getElementById("spouseId").style.display = "none";
+                break;
+            case 'true':
+                document.getElementById("spouseId").style.display = "";
+                break;
+            default:
+                document.getElementById("spouseId").style.display = "none";
+                break;
+        }
+
+    }
+
+</script>
+<script>
+    function getRelationship() {
+        let name1 = document.getElementById("1");
+        let name2 = document.getElementById("2");
+        if (trim(name1.value) === "" || trim(name1.value) === undefined || trim(name1.value) == null) alert("你还没有输入第一个人姓名呀");
+        else if (trim(name2.value) === "" || trim(name2.value) === undefined || trim(name2.value) == null) alert("你还没有输入第二个人姓名呀");
+        else {
+            $.ajax({
+                url: "/admin/getRelationshipByTwoName",
+                type: "POST",
+                data: {
+                    "name1": name1.value,
+                    "name2": name2.value
+                },
+                success: function (msg) {
+                    alert(msg);
+                },
+                error: function () {
+                    alert(false)
+                }
+            })
+        }
+    }
+</script>
+</body>
+
+</html>

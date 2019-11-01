@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="no-js">
+
+
+<meta charset="UTF-8">
+<title>家谱</title>
+
+
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/css/animate.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
+
+
+<script th:src="@{/js/modernizr-2.6.2.min.js}"></script>
+
+
+<body>
+
+<div class="container">
+    <h1 style="text-align: center">简易家谱管理系统</h1>
+    <h2>欢迎您,user</h2>
+    <hr>
+    <a href="/user/findOfUser">查询家谱</a><br>
+    <a href="/admin/tree">查询图形化家谱</a><br>
+    <br>
+    <form action="/admin/searchByName">
+        通过姓名查询成员:<input type="text" id="searchName" name="name" placeholder="请输入姓名"><input type="submit" value="查询"><br>
+    </form>
+    <form action="/admin/searchByBirthday">
+        通过生日查询成员:<input type="text" id="searchBirth" name="birthday" placeholder="请输入生日"><input type="submit" value="查询"><br>
+    </form>
+    <br>
+    <form>
+        通过姓名查询成员关系:<br>
+        <input type="text" id="1" name="name1" placeholder="请输入第一个人的姓名"><br>
+        <input type="text" id="2" name="name2" placeholder="请输入第二个人的姓名"><br>
+        <input type="button" onclick="getRelationship()" value="查询"><br>
+    </form>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<!-- Placeholder -->
+<script th:src="@{/js/jquery.placeholder.min.js}"></script>
+<!-- Waypoints -->
+<script th:src="@{/js/jquery.waypoints.min.js}"></script>
+<!-- Main JS -->
+<script th:src="@{/js/main.js}"></script>
+
+
+<script>
+    function getRelationship() {
+        let name1 = document.getElementById("1");
+        let name2 = document.getElementById("2");
+        if (trim(name1.value) === "" || trim(name1.value) === undefined || trim(name1.value) == null) alert("你还没有输入第一个人姓名呀");
+        else if (trim(name2.value) === "" || trim(name2.value) === undefined || trim(name2.value) == null) alert("你还没有输入第二个人姓名呀");
+        else {
+            $.ajax({
+                url: "/admin/getRelationshipByTwoName",
+                type: "POST",
+                data: {
+                    "name1": name1.value,
+                    "name2": name2.value
+                },
+                success: function (msg) {
+                    alert(msg);
+                },
+                error: function () {
+                    alert(false)
+                }
+            })
+        }
+    }
+</script>
+
+
+
+</body>
+
+</html>

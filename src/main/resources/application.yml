@@ -1,0 +1,13 @@
+server:
+  port: 8085
+
+spring:
+  thymeleaf:
+    mode: HTML
+    encoding: utf-8
+    servlet:
+      content-type: text/html
+    cache: false
+    suffix: .html
+
+
