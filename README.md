@@ -6,3 +6,4 @@ springboot+thymeleaf
 
 p.json保存家谱中角色信息
 relationship保存人物关系，画家谱图图
+两个文件默认保存在D盘根目录中
